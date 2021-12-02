@@ -9,7 +9,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import kitty.cheshire.playground.db.Element
@@ -47,8 +50,8 @@ fun ShowDataFlow(viewModel: MainViewModel) {
 
 @Composable
 fun ShowDataLiveData(viewModel: MainViewModel) {
-    val elements: List<Element> by viewModel.elementsLiveData.observeAsState(listOf())
-    ShowData(data = elements)
+    val elements: State<List<Element>?> = viewModel.elementsLiveData.observeAsState()
+    elements.value?.let { ShowData(data = it) }
 }
 
 @Composable
