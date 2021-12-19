@@ -3,6 +3,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("kotlin-kapt")
+    id("kotlinx-serialization")
 }
 
 android {
@@ -64,7 +65,7 @@ dependencies {
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
-    implementation("androidx.navigation:navigation-compose:2.4.0-beta02")
+    implementation("androidx.navigation:navigation-compose:2.4.0-rc01")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
@@ -72,6 +73,7 @@ dependencies {
     implementation("com.google.android.material:material:1.4.0")
     // JetBrains
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
 
     // 3rd Party
     // Koin
@@ -81,6 +83,7 @@ dependencies {
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
     implementation("com.github.kittinunf.fuel:fuel-android:2.3.1")
     implementation("com.github.kittinunf.fuel:fuel-coroutines:2.3.1")
+    implementation("com.github.kittinunf.fuel:fuel-kotlinx-serialization:2.3.1")
     // Test stuff
     testImplementation("junit:junit:4.+")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")

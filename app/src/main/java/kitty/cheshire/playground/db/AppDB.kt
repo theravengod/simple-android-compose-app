@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import kitty.cheshire.playground.db.daos.CoffeeDAO
+import kitty.cheshire.playground.db.model.Coffee
 
-@Database(entities = [Element::class], version = 1, exportSchema = false)
+@Database(entities = [Coffee::class], version = 1, exportSchema = false)
 abstract class AppDB : RoomDatabase() {
 
-    abstract fun elementDAO(): ElementDAO
+    abstract fun coffeeDAO(): CoffeeDAO
 
     companion object {
         // Singleton prevents multiple instances of database opening at the

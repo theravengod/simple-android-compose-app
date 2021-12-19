@@ -5,12 +5,13 @@ import kitty.cheshire.playground.db.AppDB
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext
+import org.koin.core.logger.Level
 
 class App: Application() {
 
     private val appDB by lazy { AppDB.getDatabase(this) }
 
-    val elementsDAO by lazy { appDB.elementDAO() }
+    val coffeeDAO by lazy { appDB.coffeeDAO() }
 
     override fun onCreate() {
         super.onCreate()
@@ -23,10 +24,10 @@ class App: Application() {
     private fun initStuff() {
         GlobalContext.startKoin {
             // Koin Android logger
-            androidLogger()
-            //inject Android context
+            androidLogger(if (BuildConfig.DEBUG) Level.ERROR else Level.NONE) // For issue https://github.com/InsertKoinIO/koin/issues/1188
+            // Inject Android context
             androidContext(this@App)
-            // use modules
+            // Use modules
             modules(appModules)
         }
     }
