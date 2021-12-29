@@ -6,6 +6,7 @@ buildscript {
         set("composeVersion", "1.0.5")
         set("roomVersion","2.3.0")
         set("koinVersion", "3.1.2")
+        set("ktorVersion", "1.5.0")
     }
     repositories {
         google()

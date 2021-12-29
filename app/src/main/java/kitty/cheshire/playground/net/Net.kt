@@ -1,36 +1,40 @@
 package kitty.cheshire.playground.net
 
-import android.util.Log
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.coroutines.awaitObjectResult
-import com.github.kittinunf.fuel.serialization.kotlinxDeserializerOf
+import io.ktor.client.*
+import io.ktor.client.request.*
 import kitty.cheshire.playground.db.daos.CoffeeDAO
 import kitty.cheshire.playground.db.model.Coffee
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.serialization.builtins.ListSerializer
+import org.koin.java.KoinJavaComponent.inject
+import timber.log.Timber
+import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
 
 // Using random data from https://random-data-api.com/documentation
 class Net(private val coffeeDAO: CoffeeDAO) {
 
     private val insertCoroutineScope = CoroutineScope(Dispatchers.IO + Job())
 
-    suspend fun getSomeRandomCoffee(howMany: Int = 10) {
-        Fuel.get("https://random-data-api.com/api/coffee/random_coffee?size=$howMany")
-            .awaitObjectResult(kotlinxDeserializerOf(loader = ListSerializer(Coffee.serializer())))
-            .fold(
-                success = { coffeeList ->
-                    insertCoroutineScope.launch {
-                        coffeeList.forEach { coffeeDAO.insertCoffee(it) }
-                    }
-                },
-                failure = {
-                    Log.e("NET", "ERROR : ${it.exception.localizedMessage}")
-                    Log.e("NET", "ERROR : ", it.cause)
-                }
-            )
-    }
+    private val ktorHttpClient: HttpClient by inject(HttpClient::class.java)
 
+    suspend fun getSomeRandomCoffee(howMany: Int = 10): Result<Int> {
+        return try {
+            val coffeeList = ktorHttpClient.get<List<Coffee>>("https://random-data-api.com/api/coffee/random_coffee") {
+                parameter("size", "$howMany")
+            }
+            if (coffeeList.isNotEmpty()) {
+                insertCoroutineScope.launch {
+                    coffeeList.forEach { coffeeDAO.insertCoffee(it) }
+                }
+            }
+            success(coffeeList.size)
+        } catch (e: Exception) {
+            Timber.e(e, "NET ERR")
+            failure(e)
+        }
+    }
 }
+

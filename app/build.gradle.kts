@@ -53,6 +53,7 @@ dependencies {
     val composeVersion: String by rootProject.extra
     val roomVersion: String by rootProject.extra
     val koinVersion: String by rootProject.extra
+    val ktorVersion: String by rootProject.extra
 
     // AndroidX
     implementation("androidx.core:core-ktx:1.7.0")
@@ -79,11 +80,12 @@ dependencies {
     // Koin
     implementation("io.insert-koin:koin-core:$koinVersion")
     implementation("io.insert-koin:koin-androidx-compose:$koinVersion")
-    // Fuel
-    implementation("com.github.kittinunf.fuel:fuel:2.3.1")
-    implementation("com.github.kittinunf.fuel:fuel-android:2.3.1")
-    implementation("com.github.kittinunf.fuel:fuel-coroutines:2.3.1")
-    implementation("com.github.kittinunf.fuel:fuel-kotlinx-serialization:2.3.1")
+    // KTor
+    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+    implementation("io.ktor:ktor-client-serialization:$ktorVersion")
+    implementation("io.ktor:ktor-client-logging-jvm:$ktorVersion")
+    // Timber
+    implementation("com.jakewharton.timber:timber:5.0.1")
     // Test stuff
     testImplementation("junit:junit:4.+")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
