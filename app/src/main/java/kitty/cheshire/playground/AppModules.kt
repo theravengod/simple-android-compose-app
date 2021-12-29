@@ -26,7 +26,7 @@ val appModules = module {
     viewModel { parameters ->
         MainViewModel()
     }
-    single {
+    single { // Net client
         HttpClient(OkHttp) {
             engine {
                 config {
