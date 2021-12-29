@@ -5,5 +5,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Secure Share"
+rootProject.name = "Simple Android Compose App"
 include ':app'
