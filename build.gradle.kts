@@ -1,28 +1,19 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-buildscript {
-    extra.apply {
-        set("composeVersion", "1.0.5")
-        set("roomVersion","2.3.0")
-        set("koinVersion", "3.1.2")
-        set("ktorVersion", "1.5.0")
-    }
-    repositories {
-        google()
-        mavenCentral()
-        maven("https://plugins.gradle.org/m2/")
-        maven(url = "https://dl.bintray.com/kotlin/kotlinx/")
-    }
-    dependencies {
-        classpath("com.android.tools.build:gradle:7.0.4")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31")
-        classpath("org.jlleitschuh.gradle:ktlint-gradle:10.1.0")
-        classpath(kotlin("gradle-plugin", version = "1.5.31"))
-        classpath(kotlin("serialization", version = "1.5.31"))
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
+
+project.extra["composeCompilerVersion"] = "1.5.8" // Get it from here: https://developer.android.com/jetpack/androidx/releases/compose-kotlin
+project.extra["composeBOMVersion"] = "2023.10.01" // Get it from here : https://developer.android.com/jetpack/compose/bom/bom-mapping
+
+plugins {
+    val agpVersion = "8.2.2"
+    val kotlinVersion = "1.9.22" // Make sure it's compatible with composeCompilerVersion
+
+    id("org.jetbrains.kotlin.android") version kotlinVersion apply false
+    id("com.android.application") version agpVersion apply false
+    id("com.android.library") version agpVersion apply false
+    id("com.google.devtools.ksp") version "1.9.22-1.0.17" apply false  // Get it from here: https://github.com/google/ksp/releases - first part needs to match the Kotlin compiler version
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+    kotlin("plugin.serialization") version "1.9.22"
 }
 
 allprojects {
