@@ -37,6 +37,10 @@ android {
     ksp {
         arg("room.schemaLocation", "$projectDir/schemas")
     }
+    composeCompiler {
+        reportsDestination = layout.buildDirectory.dir("compose_compiler")
+        stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
+    }
     packagingOptions.resources.excludes.run {
         add("/META-INF/{AL2.0,LGPL2.1}")
         add("/META-INF/atomicfu.kotlin_module")
