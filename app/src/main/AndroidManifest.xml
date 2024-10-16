@@ -14,7 +14,7 @@
         <activity
             android:name=".ui.screens.main.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Playground.NoActionBar">
+            android:theme="@style/Theme.Playground">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

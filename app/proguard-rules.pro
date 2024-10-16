@@ -20,6 +20,23 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+## Generic
+-optimizationpasses 3
+
+-dontusemixedcaseclassnames
+-verbose
+-allowaccessmodification
+
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception  # Optional: Keep custom exceptions.
+
+## Keep models
+-keep class kitty.cheshire.playground.db.model.** { <fields>; }
+
+# Kotlin suspend and continuation
+-keepattributes Signature
+-keep class kotlin.coroutines.Continuation
+
 # Timber
 -assumenosideeffects class android.util.Log {
     public static *** d(...);

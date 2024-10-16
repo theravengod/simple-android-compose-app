@@ -1,20 +1,21 @@
 val kotlinVersion: String by extra
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    id("com.google.devtools.ksp")
-    id("kotlinx-serialization")
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.jetbrainsKotlinSerializatiobn)
+    alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.googleKsp)
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
 
     namespace = "kitty.cheshire.playground"
 
     defaultConfig {
         applicationId = "kitty.cheshire.playground"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -22,99 +23,81 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
+    packagingOptions.resources.excludes.run {
+        add("/META-INF/{AL2.0,LGPL2.1}")
+        add("/META-INF/atomicfu.kotlin_module")
+    }
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_19
-        targetCompatibility = JavaVersion.VERSION_19
-    }
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
-        kotlinOptions {
-            jvmTarget = "19"
-        }
-    }
-    buildFeatures {
-        compose = true
-        buildConfig = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = rootProject.extra["composeCompilerVersion"] as String
-    }
-    packagingOptions.resources.excludes.run {
-        add("/META-INF/{AL2.0,LGPL2.1}")
-        add("/META-INF/atomicfu.kotlin_module")
-    }
 }
 
 dependencies {
     // Kotlin Core
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation(libs.androidx.core.ktx)
+    // Kotlin Serialization
+    implementation(libs.kotlin.serialization)
+    implementation(libs.kotlinx.coroutines.android)
 
-    // Compose
-    val composeBom = platform("androidx.compose:compose-bom:${rootProject.extra["composeBOMVersion"]}")
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
+    // Compose BOM
+    implementation(platform(libs.androidx.compose.bom))
 
-    // Material Design 2
-    implementation("androidx.compose.material:material")
-    // Needed for measurement/layout by Accompanist
-    implementation("androidx.compose.ui:ui-util")
-    // Android Studio Preview support
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    // UI Tests
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    // Material Design 3
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
     // Add full set of material icons
-    implementation("androidx.compose.material:material-icons-extended")
-    // Integration with LiveData
-    implementation("androidx.compose.runtime:runtime-livedata")
+    implementation(libs.androidx.material.icons.extended)
     // Integration with activities
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-    implementation("androidx.compose.ui:ui-viewbinding")
-    implementation("androidx.activity:activity-compose:1.8.2")
-    implementation("androidx.activity:activity-ktx:1.8.2")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose")
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
 
     // ViewModel Compose and View (KTX)
-    val composeLifecycleVersion = "2.7.0"
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$composeLifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$composeLifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$composeLifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$composeLifecycleVersion")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.navigation.compose)
 
-    val roomVersion = "2.6.1"
-    implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
-
-    implementation("androidx.navigation:navigation-compose:2.7.6")
-
-    // Google
-    implementation("com.google.android.material:material:1.11.0")
-    // JetBrains
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
+    // Room
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
     // 3rd Party
     // Koin
-    val koinVersion = "3.1.2"
-    implementation("io.insert-koin:koin-core:$koinVersion")
-    implementation("io.insert-koin:koin-androidx-compose:$koinVersion")
+    implementation(libs.koin.core)
+    implementation(libs.koin.androidx.compose)
 
     // KTor
-    val ktorVersion = "1.5.0"
-    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
-    implementation("io.ktor:ktor-client-serialization:$ktorVersion")
-    implementation("io.ktor:ktor-client-logging-jvm:$ktorVersion")
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.serialization)
+    implementation(libs.ktor.client.logging.jvm)
     // Timber
-    implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation(libs.timber)
 
-    // Testing stuff
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    // Test
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }
